@@ -21,6 +21,7 @@ export class AppComponent implements RemoteGridApi {
   ];
 
   rowData = [];
+  page = 1;
 
   gridOptions = {
     pagination: true,
@@ -37,7 +38,7 @@ export class AppComponent implements RemoteGridApi {
   }
 
   getData(params): Observable<{ data; totalRecords }> {
-    const url = `https://reqres.in/api/users`;
+    const url = `https://reqres.in/api/users?page=${this.page}`;
     let perPage: number;
     let totalPages: number;
     let total: number;
@@ -53,9 +54,9 @@ export class AppComponent implements RemoteGridApi {
   }
 
   changedPagination(event: PaginationChangedEvent) {
-    const currentPage = this.gridApi.paginationGetCurrentPage();
-    //llamar servicio que cambia la páginaci
-    console.log(currentPage);
-    //this.gridApi.purgeVirtualPageCache
+    if (event.newPage) {
+      this.page = event.api.paginationGetCurrentPage() + 1; //tengo la pagínación aquí
+      this.getData(null);
+    }
   }
 }
